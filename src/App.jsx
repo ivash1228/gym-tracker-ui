@@ -11,31 +11,26 @@ import NewWorkoutForm from './pages/NewWorkoutForm';
 import WorkoutDetails from './pages/WorkoutDetails';
 import NewExercise from './pages/NewExercise';
 import Layout from './components/Layout';
+import { ROUTES } from './constants/constants';
 
 function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/clients/new" element={<NewClient />} />
-        <Route path="/clients/:clientId/workouts/:workoutId" element={<WorkoutDetails />} />
-        <Route path="/clients/:clientId/workouts/new" element={<NewWorkoutForm />} />
-        <Route path="/clients/:clientId/workouts" element={<Workouts />} />
-        <Route path="/clients" element={
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.NEW_CLIENT} element={<NewClient />} />
+        <Route path={ROUTES.WORKOUT_DETAILS(':clientId', ':workoutId')} element={<WorkoutDetails />} />
+        <Route path={ROUTES.NEW_WORKOUT(':clientId')} element={<NewWorkoutForm />} />
+        <Route path={ROUTES.WORKOUTS(':clientId')} element={<Workouts />} />
+        <Route path={ROUTES.CLIENTS} element={
           <ProtectedRoute>
             <Clients />
           </ProtectedRoute>
         } />
-        <Route path="/exercises/new" element={<NewExercise />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path={ROUTES.NEW_EXERCISE} element={<NewExercise />} />
+        <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.CLIENTS} replace />} />
       </Routes>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-      />
+      <ToastContainer />
     </Layout>
   );
 }

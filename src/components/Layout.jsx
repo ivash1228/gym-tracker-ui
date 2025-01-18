@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../constants/constants';
 
 const Layout = ({ children }) => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Layout = ({ children }) => {
                 alignItems: 'center'
             }}>
                 <button
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate(ROUTES.HOME)}
                     style={{
                         padding: '8px 16px',
                         backgroundColor: '#AE3030',

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import Button from '../components/Button';
+import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
 import '../styles/common.css';
 
 export default function NewWorkoutForm() {
@@ -34,19 +35,12 @@ export default function NewWorkoutForm() {
 
         if (validateForm()) {
             try {
-                const response = await api.post(`/clients/${clientId}/workouts`, formData);
-                if (response.status === 200 || response.status === 201) {
-                    toast.success('Workout created successfully');
-                    navigate(`/clients/${clientId}/workouts`);
-                }
+                await api.post(API_ENDPOINTS.WORKOUTS(clientId), formData);
+                toast.success('Workout created successfully');
+                navigate(ROUTES.WORKOUTS(clientId));
             } catch (error) {
-                if (Array.isArray(error.response?.data)) {
-                    error.response.data.forEach(errorMessage => {
-                        toast.error(errorMessage);
-                    });
-                } else {
-                    toast.error('Failed to create workout');
-                }
+                console.error('Error:', error);
+                toast.error(error.response.data.message);
             }
         }
     };
@@ -73,7 +67,7 @@ export default function NewWorkoutForm() {
             padding: '20px'
         }}>
             <h1>New Workout</h1>
-            <form onSubmit={handleSubmit} style={{ width: '300px' }}>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <input
                     type="text"
                     name="workoutName"
@@ -82,20 +76,32 @@ export default function NewWorkoutForm() {
                     placeholder="Workout Name"
                     style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
                 />
+                {errors.workoutName && <div className="error-message">{errors.workoutName}</div>}
+    
                 <input
                     type="date"
                     name="workoutDate"
                     value={formData.workoutDate}
                     onChange={handleChange}
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+                    style={{ width: '100%', padding: '8px', marginBottom: '20px' }}
                 />
-                <Button type="submit">Save Workout</Button>
-                <Button 
-                    type="button" 
-                    onClick={() => navigate(`/clients/${clientId}/workouts`)}
-                >
-                    Cancel
-                </Button>
+                {errors.workoutDate && <div className="error-message">{errors.workoutDate}</div>}
+    
+                <div className="form-buttons">
+                    <Button 
+                        type="submit"
+                        variant={BUTTON_VARIANTS.PRIMARY}
+                    >
+                        Save Workout
+                    </Button>
+                    <Button 
+                        type="button" 
+                        variant={BUTTON_VARIANTS.SECONDARY}
+                        onClick={() => navigate(ROUTES.WORKOUTS(clientId))}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </form>
         </div>
     );

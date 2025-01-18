@@ -1,11 +1,13 @@
-import Button from '../components/Button';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import api from '../services/api';
+import Button from '../components/Button';
+import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
+import { useApi } from '../hooks/useApi';
 
 export default function Clients() {
     const [clients, setClients] = useState([]);
     const navigate = useNavigate();
+    const { loading, apiCall } = useApi();
 
     useEffect(() => {
         fetchClients();
@@ -13,35 +15,49 @@ export default function Clients() {
 
     const fetchClients = async () => {
         try {
-            const response = await api.get('/clients');
-            setClients(response.data);
+            const data = await apiCall('get', API_ENDPOINTS.CLIENTS);
+            setClients(data);
         } catch (error) {
-            console.error('Error fetching clients:', error);
+            console.error('Error:', error);
         }
     };
 
     const handleClientClick = (clientId) => {
-        navigate(`/clients/${clientId}/workouts`);
+        navigate(ROUTES.WORKOUTS(clientId));
     };
 
     const handleAddClient = () => {
-        navigate('/clients/new');
+        navigate(ROUTES.NEW_CLIENT);
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="container">
             <h1>Clients</h1>
-            {clients.map((client) => (
-                <Button
-                    key={client.id}
-                    onClick={() => handleClientClick(client.id)}
-                    variant="primary"
-                    fullWidth
-                >
-                    {`${client.firstName} ${client.lastName}`}
-                </Button>
-            ))}
-            <Button onClick={handleAddClient} variant="success" fullWidth>
+            {clients.length === 0 ? (
+                <div style={{ 
+                    textAlign: 'center', 
+                    color: '#888',
+                    margin: '20px 0'
+                }}>
+                    No clients yet. Add your first client!
+                </div>
+            ) : (
+                clients.map((client) => (
+                    <Button
+                        key={client.id}
+                        onClick={() => handleClientClick(client.id)}
+                        variant={BUTTON_VARIANTS.SUCCESS}
+                        fullWidth
+                    >
+                        {`${client.firstName} ${client.lastName}`}
+                    </Button>
+                ))
+            )}
+            <Button onClick={handleAddClient} variant={BUTTON_VARIANTS.SUCCESS} fullWidth>
                 Add New Client
             </Button>
         </div>

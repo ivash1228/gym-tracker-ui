@@ -3,27 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import Button from '../components/Button';
+import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES, EXERCISE_TYPES } from '../constants/constants';
 import '../styles/common.css';
 
 export default function NewExercise() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
-        type: 'SET'
+        type: EXERCISE_TYPES.SET
     });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/exercises', formData);
+            await api.post(API_ENDPOINTS.EXERCISES, formData);
             toast.success('Exercise created successfully');
             navigate(-1);
         } catch (error) {
-            if (Array.isArray(error.response?.data)) {
-                error.response.data.forEach(err => toast.error(err));
-            } else {
-                toast.error('Failed to create exercise');
-            }
+            console.error('Error:', error);
+            toast.error(error.response.data.message);
         }
     };
 
@@ -35,7 +33,7 @@ export default function NewExercise() {
             padding: '20px'
         }}>
             <h1>New Exercise</h1>
-            <form onSubmit={handleSubmit} style={{ width: '300px' }}>
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <input
                     type="text"
                     value={formData.name}
@@ -46,13 +44,26 @@ export default function NewExercise() {
                 <select
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value})}
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+                    style={{ width: '100%', padding: '8px', marginBottom: '20px' }}
                 >
-                    <option value="SET">Set Based</option>
-                    <option value="TIME">Time Based</option>
+                    <option value={EXERCISE_TYPES.SET}>Set Based</option>
+                    <option value={EXERCISE_TYPES.TIME}>Time Based</option>
                 </select>
-                <Button type="submit">Create Exercise</Button>
-                <Button type="button" onClick={() => navigate(-1)}>Cancel</Button>
+                <div className="form-buttons">
+                    <Button 
+                        type="submit"
+                        variant={BUTTON_VARIANTS.PRIMARY}
+                    >
+                        Create Exercise
+                    </Button>
+                    <Button 
+                        type="button" 
+                        variant={BUTTON_VARIANTS.SECONDARY}
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </form>
         </div>
     );

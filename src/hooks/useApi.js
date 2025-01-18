@@ -14,7 +14,7 @@ export function useApi() {
             if (Array.isArray(error.response?.data)) {
                 error.response.data.forEach(err => toast.error(err));
             } else {
-                toast.error('Operation failed');
+                toast.error(error.response.data.message);
             }
             throw error;
         } finally {

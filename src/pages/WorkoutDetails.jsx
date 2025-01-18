@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import Button from '../components/Button';
+import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES, EXERCISE_TYPES } from '../constants/constants';
 import '../styles/common.css';
 
 export default function WorkoutDetails() {
@@ -12,42 +13,32 @@ export default function WorkoutDetails() {
     const [workout, setWorkout] = useState(null);
     const [exercisesWithSets, setExercisesWithSets] = useState({});
     const [showExerciseList, setShowExerciseList] = useState(false);
-    const [availableExercises, setAvailableExercises] = useState([]);
 
     const [showAddSetModal, setShowAddSetModal] = useState(false);
     const [workoutExerciseId, setWorkoutExerciseId] = useState(null);
     const [newSet, setNewSet] = useState({ weights: '', reps: '' });
+    const [allExercises, setAllExercises] = useState([]);
 
     useEffect(() => {
         fetchWorkoutDetails();
-    }, [workoutId]);
+    }, [workoutId, clientId]);
 
     const fetchWorkoutDetails = async () => {
         try {
-            const workoutResponse = await api.get(`/clients/${clientId}/workouts/${workoutId}`);
-            console.log('Full workout response:', workoutResponse.data);
-            console.log('Exercises with sets:', workoutResponse.data.orderedExercisesWithSets);
+            const workoutResponse = await api.get(API_ENDPOINTS.WORKOUT_DETAILS(clientId, workoutId));
             setWorkout(workoutResponse.data);
             setExercisesWithSets(workoutResponse.data.orderedExercisesWithSets);
+            const exercisesResponse = await api.get(API_ENDPOINTS.EXERCISES);
+            setAllExercises(exercisesResponse.data);
         } catch (error) {
             console.error('Error:', error);
             toast.error('Failed to fetch workout details');
         }
     };
 
-    const handleAddExercise = async () => {
-        try {
-            const response = await api.get('/exercises');
-            setAvailableExercises(response.data);
-            setShowExerciseList(true);
-        } catch (error) {
-            toast.error('Failed to fetch exercises');
-        }
-    };
-
     const handleExerciseSelect = async (exerciseId, exerciseName) => {
         try {
-            const response = await api.post(`/clients/${clientId}/workouts/${workoutId}/exercises`, {
+            const response = await api.post(API_ENDPOINTS.WORKOUT_EXERCISES(clientId, workoutId), {
                 exerciseId: exerciseId
             });
             const workoutExerciseId = response.data;
@@ -71,7 +62,7 @@ export default function WorkoutDetails() {
 
     const handleAddSet = async () => {
         try {
-            await api.post(`/clients/${clientId}/workouts/${workoutId}/exercises/${workoutExerciseId}/sets`, {
+            await api.post(API_ENDPOINTS.WORKOUT_SETS(clientId, workoutId, workoutExerciseId), {
                 weights: parseInt(newSet.weights),
                 reps: parseInt(newSet.reps)
             });
@@ -163,9 +154,43 @@ export default function WorkoutDetails() {
                 ))}
             </div>
 
-            <Button onClick={handleAddExercise}>
-                + Add Exercise
-            </Button>
+                    {/* Список всех доступных упражнений */}
+        <div style={{ marginTop: '20px' }}>
+            <h3>Available Exercises</h3>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                gap: '10px',
+                padding: '10px'
+            }}>
+                {allExercises.map(exercise => (
+                    <div 
+                        key={exercise.id}
+                        style={{
+                            backgroundColor: '#2d2d2d',
+                            padding: '10px',
+                            borderRadius: '8px',
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => handleExerciseSelect(exercise.id, exercise.name)}
+                    >
+                        <div style={{ fontWeight: 'bold' }}>{exercise.name}</div>
+                        <div style={{ 
+                            fontSize: '0.8em',
+                            color: '#888'
+                        }}>
+                            {exercise.type === EXERCISE_TYPES.SET ? 'Set Based' : 'Time Based'}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+            <div style={{ marginTop: '20px' }}>
+                <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}>
+                    + Create New Exercise
+                </Button>
+            </div>
 
             {showExerciseList && (
                 <div style={{
@@ -181,7 +206,7 @@ export default function WorkoutDetails() {
                     overflow: 'auto'
                 }}>
                     <h3>Select Exercise</h3>
-                    {availableExercises.map(exercise => (
+                    {allExercises.map(exercise => (
                         <Button
                             key={exercise.id}
                             onClick={() => handleExerciseSelect(exercise.id, exercise.name)}
@@ -189,7 +214,7 @@ export default function WorkoutDetails() {
                             {exercise.name}
                         </Button>
                     ))}
-                    <Button onClick={() => navigate('/exercises/new')}>
+                    <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}>
                         + Create New Exercise
                     </Button>
                     <Button onClick={() => setShowExerciseList(false)}>
