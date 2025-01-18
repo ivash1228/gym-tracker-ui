@@ -1,0 +1,28 @@
+body {
+    background-color: #292828;
+    font-family: Arial, sans-serif;
+    color: #cdbfbf;
+    margin: 30px;
+    padding: 30px;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}   
+
+.page-container {
+    padding: 20px;
+}
+
+.content-width {
+    max-width: 800px;
+}
+
+.page-title {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 300px;
+    padding: 8px;
+    margin-bottom: 10px;
+}
