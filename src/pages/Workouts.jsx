@@ -51,7 +51,7 @@ export default function Workouts() {
                     <Button
                         key={workout.id}
                         onClick={() => handleWorkoutClick(workout.id)}
-                        variant={BUTTON_VARIANTS.PRIMARY}
+                        variant={BUTTON_VARIANTS.SUCCESS}
                         fullWidth
                     >
                         {workout.workoutName} - {workout.workoutDate}
@@ -60,7 +60,7 @@ export default function Workouts() {
             )}
             <Button 
                 onClick={handleAddWorkout} 
-                variant={BUTTON_VARIANTS.PRIMARY}
+                variant={BUTTON_VARIANTS.ACTION}
                 fullWidth
                 className="add-new-button"
             >

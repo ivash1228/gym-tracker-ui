@@ -59,7 +59,7 @@ export default function Clients() {
             )}
             <Button 
                 onClick={handleAddClient} 
-                variant={BUTTON_VARIANTS.PRIMARY} 
+                variant={BUTTON_VARIANTS.ACTION} 
                 fullWidth
                 className="add-new-button"
             >

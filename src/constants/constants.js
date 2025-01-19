@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
 };
 
 export const BUTTON_VARIANTS = {
-    PRIMARY: 'primary',
+    ACTION: 'primary',
     SECONDARY: 'secondary',
     SUCCESS: 'success'
 };

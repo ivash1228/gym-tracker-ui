@@ -3,7 +3,7 @@ import '../styles/button.css';
 const Button = ({ 
     children, 
     onClick, 
-    variant = 'primary', 
+    variant = 'action', 
     type = 'button',
     fullWidth,
     className,
@@ -19,9 +19,9 @@ const Button = ({
     };
 
     const variantStyles = {
-        primary: {
-            backgroundColor: 'var(--color-primary)',
-            color: 'var(--color-text-primary)'
+        action: {
+            backgroundColor: 'var(--color-action)',
+            color: 'var(--color-text-action)'
         },
         secondary: {
             backgroundColor: 'var(--color-secondary)',

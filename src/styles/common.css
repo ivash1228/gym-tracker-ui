@@ -1,10 +1,10 @@
 /* Глобальные стили */
 :root {
-    --color-primary: #AE3030;
-    --color-secondary: #2d2d2d;
-    --color-success: #4CAF50;
-    --color-text-primary: #cdbfbf;
-    --color-text-secondary: #888;
+    --color-action: #AE3030;
+    --color-secondary: #463c3ce7;
+    --color-success: #463c3ce7;
+    --color-text-action: #cdbfbf;
+    --color-text-secondary: #cdbfbf;
     --color-background: #292828;
     --color-border: #3d3d3d;
     --color-error: #ff4444;
@@ -13,7 +13,7 @@
 body {
     background-color: var(--color-background);
     font-family: Arial, sans-serif;
-    color: var(--color-text-primary);
+    color: var(--color-text-action);
     margin: 30px;
     padding: 30px;
     display: flex;
@@ -52,7 +52,7 @@ input {
     background-color: var(--color-secondary);
     border: 1px solid var(--color-border);
     border-radius: 4px;
-    color: var(--color-text-primary);
+    color: var(--color-text-action);
     box-sizing: border-box; 
 }
 
@@ -62,7 +62,7 @@ input:focus {
 }
 
 input[type="date"] {
-    color: var(--color-text-primary);
+    color: var(--color-text-action);
     background-color: var(--color-secondary);
 }
 
@@ -90,7 +90,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 h1 {
     margin-bottom: 20px;
-    color: var(--color-text-primary);
+    color: var(--color-text-action);
 }
 
 

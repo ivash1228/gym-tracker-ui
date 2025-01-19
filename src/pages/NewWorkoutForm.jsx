@@ -94,7 +94,7 @@ export default function NewWorkoutForm() {
                 <div className="form-buttons">
                     <Button 
                         type="submit"
-                        variant={BUTTON_VARIANTS.PRIMARY}
+                        variant={BUTTON_VARIANTS.ACTION}
                     >
                         Save Workout
                     </Button>

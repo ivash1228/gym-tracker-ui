@@ -122,7 +122,7 @@ export default function NewClientForm() {
                 <div className="form-buttons">
                     <Button 
                         type="submit"
-                        variant={BUTTON_VARIANTS.PRIMARY}
+                        variant={BUTTON_VARIANTS.ACTION}
                     >
                         Create Client
                     </Button>

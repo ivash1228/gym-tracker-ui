@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../services/api';
 import Button from '../components/Button';
-import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES, EXERCISE_TYPES } from '../constants/constants';
+import { API_ENDPOINTS, BUTTON_VARIANTS, EXERCISE_TYPES } from '../constants/constants';
 import '../styles/common.css';
 import { useApi } from '../hooks/useApi'
 
@@ -57,7 +56,7 @@ export default function NewExercise() {
                 <div className="form-buttons">
                     <Button 
                         type="submit"
-                        variant={BUTTON_VARIANTS.PRIMARY}
+                        variant={BUTTON_VARIANTS.ACTION}
                     >
                         Create Exercise
                     </Button>
