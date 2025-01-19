@@ -49,7 +49,7 @@ export default function NewExercise() {
                 <select
                     value={formData.type}
                     onChange={(e) => setFormData({...formData, type: e.target.value})}
-                    style={{ width: '100%', padding: '8px', marginBottom: '20px' }}
+                    style={{ width: '100%', padding: '8px', marginBottom: '20px', backgroundColor: 'var(--color-secondary)', color: 'var(--color-text-primary)' }}
                 >
                     <option value={EXERCISE_TYPES.SET}>Set Based</option>
                     <option value={EXERCISE_TYPES.TIME}>Time Based</option>

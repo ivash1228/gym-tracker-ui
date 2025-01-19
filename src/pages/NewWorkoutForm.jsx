@@ -13,7 +13,7 @@ export default function NewWorkoutForm() {
     
     const [formData, setFormData] = useState({
         workoutName: '',
-        workoutDate: ''
+        workoutDate: new Date().toISOString().split('T')[0]
     });
 
     const [errors, setErrors] = useState({});

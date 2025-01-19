@@ -87,108 +87,114 @@ export default function WorkoutDetails() {
             <h1>{workout.workoutName}</h1>
             <h2>{workout.workoutDate}</h2>
 
-            <div>
-                {Object.entries(exercisesWithSets || {}).map(([exerciseName, exerciseData]) => (
-                    <div key={exerciseName} style={{
-                        margin: '10px 0',
-                        padding: '15px',
-                        border: '1px solid #ccc',
-                        borderRadius: '8px'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                            <h3 style={{ margin: '0' }}>{exerciseName}</h3>
-                            <button
-                                onClick={() => {
-                                    const selectedWorkoutExerciseId = exerciseData.workoutExerciseId;
-                                    if (selectedWorkoutExerciseId) {
-                                        setWorkoutExerciseId(selectedWorkoutExerciseId);
-                                        setShowAddSetModal(true);
-                                    } else {
-                                        toast.error('Cannot add set: Exercise ID not found');
-                                    }
-                                }}
-                                style={{
-                                    padding: '4px 8px',
-                                    backgroundColor: '#4CAF50',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                + Set
-                            </button>
-                        </div>
-
-                        {/* Заголовки колонок */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '10px',
-                            marginBottom: '8px',
-                            color: '#888'
+            {Object.keys(exercisesWithSets || {}).length === 0 ? (
+                <div style={{ 
+                    textAlign: 'center', 
+                    color: '#888',
+                    margin: '20px 0'
+                }}>
+                    No exercises in this workout yet. Select or add your custom exercise!
+                </div>
+            ) : (
+                <div>
+                    {Object.entries(exercisesWithSets || {}).map(([exerciseName, exerciseData]) => (
+                        <div key={exerciseName} style={{
+                            margin: '10px 0',
+                            padding: '15px',
+                            border: '1px solid #ccc',
+                            borderRadius: '8px'
                         }}>
-                            <div>REPS</div>
-                            <div>WEIGHT</div>
-                        </div>
-                        {/* Сеты */}
-                        {(!exerciseData.sets || exerciseData.sets.length === 0) ? (
-                            <p style={{ color: '#888', margin: 0 }}>No sets added yet</p>
-                        ) : (
-                            exerciseData.sets.map((set, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: '1fr 1fr',
-                                        gap: '10px',
-                                        padding: '8px 0',
-                                        borderBottom: '1px solid #333'
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                <h3 style={{ margin: '0' }}>{exerciseName}</h3>
+                                <Button
+                                    onClick={() => {
+                                        const selectedWorkoutExerciseId = exerciseData.workoutExerciseId;
+                                        if (selectedWorkoutExerciseId) {
+                                            setWorkoutExerciseId(selectedWorkoutExerciseId);
+                                            setShowAddSetModal(true);
+                                        } else {
+                                            toast.error('Cannot add set: Exercise ID not found');
+                                        }
                                     }}
+                                    variant={BUTTON_VARIANTS.PRIMARY}
                                 >
-                                    <div>{set.reps}</div>
-                                    <div>{set.weights} kg</div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                ))}
-            </div>
+                                    + Add Set
+                                </Button>
+                            </div>
 
-                    {/* Список всех доступных упражнений */}
-        <div style={{ marginTop: '20px' }}>
-            <h3>Available Exercises</h3>
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                gap: '10px',
-                padding: '10px'
-            }}>
-                {allExercises.map(exercise => (
-                    <div 
-                        key={exercise.id}
-                        style={{
-                            backgroundColor: '#2d2d2d',
-                            padding: '10px',
-                            borderRadius: '8px',
-                            cursor: 'pointer'
-                        }}
-                        onClick={() => handleExerciseSelect(exercise.id, exercise.name)}
-                    >
-                        <div style={{ fontWeight: 'bold' }}>{exercise.name}</div>
-                        <div style={{ 
-                            fontSize: '0.8em',
-                            color: '#888'
-                        }}>
-                            {exercise.type === EXERCISE_TYPES.SET ? 'Set Based' : 'Time Based'}
+                            {/* Заголовки колонок */}
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '10px',
+                                marginBottom: '8px',
+                                color: '#888'
+                            }}>
+                                <div>REPS</div>
+                                <div>WEIGHT</div>
+                            </div>
+                            {/* Сеты */}
+                            {(!exerciseData.sets || exerciseData.sets.length === 0) ? (
+                                <p style={{ color: '#888', margin: 0 }}>No sets added yet</p>
+                            ) : (
+                                exerciseData.sets.map((set, index) => (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr 1fr',
+                                            gap: '10px',
+                                            padding: '8px 0',
+                                            borderBottom: '1px solid #333'
+                                        }}
+                                    >
+                                        <div>{set.reps}</div>
+                                        <div>{set.weights} kg</div>
+                                    </div>
+                                ))
+                            )}
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
+            )}
+
+            {/* Список всех доступных упражнений */}
+            <div style={{ marginTop: '20px' }}>
+                <h3 style={{ textAlign: 'center' }}>Available Exercises</h3>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                    gap: '10px',
+                    padding: '10px'
+                }}>
+                    {allExercises.map(exercise => (
+                        <div 
+                            key={exercise.id}
+                            style={{
+                                backgroundColor: '#2d2d2d',
+                                padding: '10px',
+                                borderRadius: '8px',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => handleExerciseSelect(exercise.id, exercise.name)}
+                        >
+                            <div style={{ fontWeight: 'bold' }}>{exercise.name}</div>
+                            <div style={{ 
+                                fontSize: '0.8em',
+                                color: '#888'
+                            }}>
+                                {exercise.type === EXERCISE_TYPES.SET ? 'Set Based' : 'Time Based'}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
 
             <div style={{ marginTop: '20px' }}>
-                <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}>
+                <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}
+                        variant={BUTTON_VARIANTS.SUCCESS}
+                                        fullWidth
+                                        >
                     + Create New Exercise
                 </Button>
             </div>
@@ -199,7 +205,7 @@ export default function WorkoutDetails() {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'white',
+                    backgroundColor: 'var(--color-secondary)',
                     padding: '20px',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
@@ -215,7 +221,10 @@ export default function WorkoutDetails() {
                             {exercise.name}
                         </Button>
                     ))}
-                    <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}>
+                    <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}
+                        variant={BUTTON_VARIANTS.SUCCESS}
+                        fullWidth
+                        >
                         + Create New Exercise
                     </Button>
                     <Button 
@@ -233,7 +242,7 @@ export default function WorkoutDetails() {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'white',
+                    backgroundColor: 'var(--color-secondary)',
                     padding: '20px',
                     borderRadius: '8px',
                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
@@ -255,12 +264,24 @@ export default function WorkoutDetails() {
                             onChange={(e) => setNewSet({ ...newSet, reps: e.target.value })}
                         />
                     </div>
-                    <div>
-                        <Button onClick={() => handleAddSet()}>Add</Button>
-                        <Button onClick={() => {
-                            setShowAddSetModal(false);
-                            setNewSet({ weights: '', reps: '' });
-                        }}>Cancel</Button>
+                    <div className="form-buttons">
+                        <Button 
+                            onClick={() => handleAddSet()}
+                            variant={BUTTON_VARIANTS.PRIMARY}
+                            fullWidth
+                        >
+                            Add
+                        </Button>
+                        <Button 
+                            onClick={() => {
+                                setShowAddSetModal(false);
+                                setNewSet({ weights: '', reps: '' });
+                            }}
+                            variant={BUTTON_VARIANTS.SECONDARY}
+                            fullWidth
+                        >
+                            Cancel
+                        </Button>
                     </div>
                 </div>
             )}

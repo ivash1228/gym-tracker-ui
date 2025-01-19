@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { ROUTES } from '../constants/constants';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -11,7 +12,10 @@ export default function Login() {
                     client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
                     callback: handleCredentialResponse,
                     auto_select: false,
-                    cancel_on_tap_outside: true
+                    cancel_on_tap_outside: true,
+                    itp_support: true,
+                    context: 'signin',
+                    ux_mode: 'popup'
                 });
 
                 window.google.accounts.id.renderButton(
@@ -20,7 +24,8 @@ export default function Login() {
                         theme: 'filled_blue',
                         size: 'large',
                         text: "signin_with",
-                        shape: "rectangular"
+                        shape: "rectangular",
+                        width: 250
                     }
                 );
             } else {
@@ -33,7 +38,7 @@ export default function Login() {
 
     const handleCredentialResponse = (response) => {
         localStorage.setItem('idToken', response.credential);
-        navigate('/clients');
+        navigate(ROUTES.CLIENTS);
     };
 
     return (

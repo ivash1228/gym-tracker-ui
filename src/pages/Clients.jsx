@@ -57,7 +57,12 @@ export default function Clients() {
                     </Button>
                 ))
             )}
-            <Button onClick={handleAddClient} variant={BUTTON_VARIANTS.SUCCESS} fullWidth>
+            <Button 
+                onClick={handleAddClient} 
+                variant={BUTTON_VARIANTS.PRIMARY} 
+                fullWidth
+                className="add-new-button"
+            >
                 Add New Client
             </Button>
         </div>

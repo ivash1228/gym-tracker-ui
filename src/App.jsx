@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from './pages/Login';
 import Clients from './pages/Clients';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -14,8 +14,11 @@ import Layout from './components/Layout';
 import { ROUTES } from './constants/constants';
 
 function App() {
+  const location = useLocation();
+  const hideNavigation = location.pathname === ROUTES.CLIENTS || location.pathname === ROUTES.LOGIN;
+
   return (
-    <Layout>
+    <Layout hideNavigation={hideNavigation}>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.NEW_CLIENT} element={<NewClient />} />

@@ -60,8 +60,9 @@ export default function Workouts() {
             )}
             <Button 
                 onClick={handleAddWorkout} 
-                variant={BUTTON_VARIANTS.SUCCESS}
+                variant={BUTTON_VARIANTS.PRIMARY}
                 fullWidth
+                className="add-new-button"
             >
                 Add New Workout
             </Button>

@@ -19,9 +19,9 @@ api.interceptors.request.use(config => {
     }
     
     return config;
-}, error => {
+  }, error => {
     return Promise.reject(error);
-});
+  });
 
   api.interceptors.response.use(
     response => response,
@@ -33,6 +33,6 @@ api.interceptors.request.use(config => {
       }
       return Promise.reject(error);
     }
-);
+  );
 
 export default api;
