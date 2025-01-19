@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../services/api';
 import Button from '../components/Button';
-import { API_ENDPOINTS, BUTTON_VARIANTS } from '../constants/constants';
+import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
+import { useApi } from '../hooks/useApi';
 import '../styles/common.css';
 
 export default function NewClientForm() {
     const navigate = useNavigate();
+    const { loading, apiCall } = useApi();
+    
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -41,12 +43,11 @@ export default function NewClientForm() {
 
         if (validateForm()) {
             try {
-                await api.post(API_ENDPOINTS.CLIENTS, formData);
+                await apiCall('post', API_ENDPOINTS.CLIENTS, formData);
                 toast.success('Client created successfully');
-                navigate('/clients');
+                navigate(ROUTES.CLIENTS);
             } catch (error) {
                 console.error('Error:', error);
-                toast.error('Failed to create client');
             }
         }
     };
@@ -65,6 +66,10 @@ export default function NewClientForm() {
         }
     };
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div style={{ 
             display: 'flex',
@@ -73,8 +78,7 @@ export default function NewClientForm() {
             padding: '20px'
         }}>
             <h1>New Client</h1>
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}
-            >
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                 <input
                     type="text"
                     name="firstName"
@@ -125,7 +129,7 @@ export default function NewClientForm() {
                     <Button 
                         type="button"
                         variant={BUTTON_VARIANTS.SECONDARY}
-                        onClick={() => navigate(API_ENDPOINTS.CLIENTS)}
+                        onClick={() => navigate(ROUTES.CLIENTS)}
                     >
                         Cancel
                     </Button>

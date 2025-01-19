@@ -5,9 +5,11 @@ import api from '../services/api';
 import Button from '../components/Button';
 import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES, EXERCISE_TYPES } from '../constants/constants';
 import '../styles/common.css';
+import { useApi } from '../hooks/useApi'
 
 export default function NewExercise() {
     const navigate = useNavigate();
+    const { loading, apiCall } = useApi();
     const [formData, setFormData] = useState({
         name: '',
         type: EXERCISE_TYPES.SET
@@ -16,14 +18,17 @@ export default function NewExercise() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post(API_ENDPOINTS.EXERCISES, formData);
+            await apiCall('post', API_ENDPOINTS.EXERCISES, formData);
             toast.success('Exercise created successfully');
             navigate(-1);
         } catch (error) {
             console.error('Error:', error);
-            toast.error(error.response.data.message);
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div style={{ 
@@ -59,7 +64,10 @@ export default function NewExercise() {
                     <Button 
                         type="button" 
                         variant={BUTTON_VARIANTS.SECONDARY}
-                        onClick={() => navigate(-1)}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate(-1);
+                        }}
                     >
                         Cancel
                     </Button>

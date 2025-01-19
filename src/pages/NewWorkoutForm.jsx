@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../services/api';
 import Button from '../components/Button';
 import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
+import { useApi } from '../hooks/useApi';
 import '../styles/common.css';
 
 export default function NewWorkoutForm() {
     const navigate = useNavigate();
     const { clientId } = useParams();
+    const { loading, apiCall } = useApi();
     
     const [formData, setFormData] = useState({
         workoutName: '',
@@ -35,12 +36,11 @@ export default function NewWorkoutForm() {
 
         if (validateForm()) {
             try {
-                await api.post(API_ENDPOINTS.WORKOUTS(clientId), formData);
+                await apiCall('post', API_ENDPOINTS.WORKOUTS(clientId), formData);
                 toast.success('Workout created successfully');
                 navigate(ROUTES.WORKOUTS(clientId));
             } catch (error) {
                 console.error('Error:', error);
-                toast.error(error.response.data.message);
             }
         }
     };
@@ -58,6 +58,10 @@ export default function NewWorkoutForm() {
             }));
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div style={{ 

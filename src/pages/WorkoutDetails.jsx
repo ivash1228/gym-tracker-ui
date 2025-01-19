@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../services/api';
 import Button from '../components/Button';
 import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES, EXERCISE_TYPES } from '../constants/constants';
+import { useApi } from '../hooks/useApi';
 import '../styles/common.css';
 
 export default function WorkoutDetails() {
     const { clientId, workoutId } = useParams();
     const navigate = useNavigate();
+    const { loading, apiCall } = useApi();
 
     const [workout, setWorkout] = useState(null);
     const [exercisesWithSets, setExercisesWithSets] = useState({});
     const [showExerciseList, setShowExerciseList] = useState(false);
-
     const [showAddSetModal, setShowAddSetModal] = useState(false);
     const [workoutExerciseId, setWorkoutExerciseId] = useState(null);
     const [newSet, setNewSet] = useState({ weights: '', reps: '' });
@@ -25,24 +25,22 @@ export default function WorkoutDetails() {
 
     const fetchWorkoutDetails = async () => {
         try {
-            const workoutResponse = await api.get(API_ENDPOINTS.WORKOUT_DETAILS(clientId, workoutId));
-            setWorkout(workoutResponse.data);
-            setExercisesWithSets(workoutResponse.data.orderedExercisesWithSets);
-            const exercisesResponse = await api.get(API_ENDPOINTS.EXERCISES);
-            setAllExercises(exercisesResponse.data);
+            const workoutResponse = await apiCall('get', API_ENDPOINTS.WORKOUT_DETAILS(clientId, workoutId));
+            setWorkout(workoutResponse);
+            setExercisesWithSets(workoutResponse.orderedExercisesWithSets);
+            const exercisesResponse = await apiCall('get', API_ENDPOINTS.EXERCISES);
+            setAllExercises(exercisesResponse);
         } catch (error) {
             console.error('Error:', error);
-            toast.error('Failed to fetch workout details');
         }
     };
 
     const handleExerciseSelect = async (exerciseId, exerciseName) => {
         try {
-            const response = await api.post(API_ENDPOINTS.WORKOUT_EXERCISES(clientId, workoutId), {
+            const response = await apiCall('post', API_ENDPOINTS.WORKOUT_EXERCISES(clientId, workoutId), {
                 exerciseId: exerciseId
             });
-            const workoutExerciseId = response.data;
-            console.log('Workout Exercise ID:', workoutExerciseId);
+            const workoutExerciseId = response;
 
             setExercisesWithSets(prev => ({
                 ...prev,
@@ -56,13 +54,13 @@ export default function WorkoutDetails() {
             fetchWorkoutDetails();
             toast.success('Exercise added successfully');
         } catch (error) {
-            toast.error('Failed to add exercise');
+            console.error('Error:', error);
         }
     };
 
     const handleAddSet = async () => {
         try {
-            await api.post(API_ENDPOINTS.WORKOUT_SETS(clientId, workoutId, workoutExerciseId), {
+            await apiCall('post', API_ENDPOINTS.WORKOUT_SETS(clientId, workoutId, workoutExerciseId), {
                 weights: parseInt(newSet.weights),
                 reps: parseInt(newSet.reps)
             });
@@ -72,9 +70,12 @@ export default function WorkoutDetails() {
             toast.success('Set added successfully');
         } catch (error) {
             console.error('Error:', error);
-            toast.error('Failed to add set');
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     if (!workout) return <div>Loading...</div>;
 
@@ -217,7 +218,10 @@ export default function WorkoutDetails() {
                     <Button onClick={() => navigate(ROUTES.NEW_EXERCISE)}>
                         + Create New Exercise
                     </Button>
-                    <Button onClick={() => setShowExerciseList(false)}>
+                    <Button 
+                        onClick={() => setShowExerciseList(false)}
+                        variant={BUTTON_VARIANTS.SECONDARY}
+                    >
                         Cancel
                     </Button>
                 </div>
