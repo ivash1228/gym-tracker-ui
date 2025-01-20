@@ -73,12 +73,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .form-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     width: 100%;
 }
 
 .form-buttons .button {
     width: 100% !important;
+    margin-bottom: 0 !important;
 }
 
 .error-message {

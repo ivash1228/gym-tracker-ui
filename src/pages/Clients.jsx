@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Button from '../components/Button';
 import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
 import { useApi } from '../hooks/useApi';
+import AddClientModal from '../components/client/AddClientModal';
 
 export default function Clients() {
     const [clients, setClients] = useState([]);
     const navigate = useNavigate();
     const { loading, apiCall } = useApi();
+    const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
         fetchClients();
@@ -26,8 +29,15 @@ export default function Clients() {
         navigate(ROUTES.WORKOUTS(clientId));
     };
 
-    const handleAddClient = () => {
-        navigate(ROUTES.NEW_CLIENT);
+    const handleAddClient = async (formData) => {
+        try {
+            await apiCall('post', API_ENDPOINTS.CLIENTS, formData);
+            setShowAddModal(false);
+            fetchClients();
+            toast.success('Client created successfully');
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     if (loading) {
@@ -58,13 +68,19 @@ export default function Clients() {
                 ))
             )}
             <Button 
-                onClick={handleAddClient} 
-                variant={BUTTON_VARIANTS.ACTION} 
+                onClick={() => setShowAddModal(true)}
+                variant={BUTTON_VARIANTS.ACTION}
                 fullWidth
                 className="add-new-button"
             >
                 Add New Client
             </Button>
+
+            <AddClientModal
+                isOpen={showAddModal}
+                onClose={() => setShowAddModal(false)}
+                onAdd={handleAddClient}
+            />
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Button from '../components/Button';
+import AddWorkoutModal from '../components/workout/AddWorkoutModal';
 import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
 import { useApi } from '../hooks/useApi';
 
@@ -9,6 +11,7 @@ export default function Workouts() {
     const { clientId } = useParams();
     const [workouts, setWorkouts] = useState([]);
     const { loading, apiCall } = useApi();
+    const [showAddModal, setShowAddModal] = useState(false);
 
     useEffect(() => {
         fetchWorkouts();
@@ -23,8 +26,15 @@ export default function Workouts() {
         }
     };
 
-    const handleAddWorkout = () => {
-        navigate(ROUTES.NEW_WORKOUT(clientId));
+    const handleAddWorkout = async (formData) => {
+        try {
+            await apiCall('post', API_ENDPOINTS.WORKOUTS(clientId), formData);
+            setShowAddModal(false);
+            fetchWorkouts();
+            toast.success('Workout created successfully');
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const handleWorkoutClick = (workoutId) => {
@@ -59,13 +69,19 @@ export default function Workouts() {
                 ))
             )}
             <Button 
-                onClick={handleAddWorkout} 
+                onClick={() => setShowAddModal(true)}
                 variant={BUTTON_VARIANTS.ACTION}
                 fullWidth
                 className="add-new-button"
             >
                 Add New Workout
             </Button>
+
+            <AddWorkoutModal
+                isOpen={showAddModal}
+                onClose={() => setShowAddModal(false)}
+                onAdd={handleAddWorkout}
+            />
         </div>
     );
 }

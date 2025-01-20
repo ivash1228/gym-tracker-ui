@@ -4,10 +4,8 @@ import Login from './pages/Login';
 import Clients from './pages/Clients';
 import ProtectedRoute from './components/ProtectedRoute';
 import Workouts from './pages/Workouts';
-import NewClient from './pages/NewClientForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import NewWorkoutForm from './pages/NewWorkoutForm';
 import WorkoutDetails from './pages/WorkoutDetails';
 import NewExercise from './pages/NewExercise';
 import Layout from './components/Layout';
@@ -21,9 +19,7 @@ function App() {
     <Layout hideNavigation={hideNavigation}>
       <Routes>
         <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.NEW_CLIENT} element={<NewClient />} />
         <Route path={ROUTES.WORKOUT_DETAILS(':clientId', ':workoutId')} element={<WorkoutDetails />} />
-        <Route path={ROUTES.NEW_WORKOUT(':clientId')} element={<NewWorkoutForm />} />
         <Route path={ROUTES.WORKOUTS(':clientId')} element={<Workouts />} />
         <Route path={ROUTES.CLIENTS} element={
           <ProtectedRoute>

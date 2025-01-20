@@ -1,15 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import Button from '../components/Button';
-import { API_ENDPOINTS, BUTTON_VARIANTS, ROUTES } from '../constants/constants';
-import { useApi } from '../hooks/useApi';
-import '../styles/common.css';
+import Button from '../Button';
+import { BUTTON_VARIANTS } from '../../constants/constants';
 
-export default function NewClientForm() {
-    const navigate = useNavigate();
-    const { loading, apiCall } = useApi();
-    
+const AddClientModal = ({ isOpen, onClose, onAdd }) => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -38,20 +31,6 @@ export default function NewClientForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (validateForm()) {
-            try {
-                await apiCall('post', API_ENDPOINTS.CLIENTS, formData);
-                toast.success('Client created successfully');
-                navigate(ROUTES.CLIENTS);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -66,26 +45,41 @@ export default function NewClientForm() {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const handleSubmit = () => {
+        if (validateForm()) {
+            onAdd(formData);
+            setFormData({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: ''
+            });
+        }
+    };
 
+    if (!isOpen) return null;
+    
     return (
-        <div style={{ 
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '20px'
+        <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -70%)',
+            backgroundColor: 'var(--color-background)',
+            padding: '20px',
+            borderRadius: '8px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            zIndex: 1000,
+            border: '1px solid var(--color-border)',
         }}>
-            <h1>New Client</h1>
-            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <h3>New Client</h3>
+            <div>
                 <input
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="First Name"
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
                 />
                 {errors.firstName && <div className="error-message">{errors.firstName}</div>}
 
@@ -95,7 +89,6 @@ export default function NewClientForm() {
                     value={formData.lastName}
                     onChange={handleChange}
                     placeholder="Last Name"
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
                 />
                 {errors.lastName && <div className="error-message">{errors.lastName}</div>}
 
@@ -105,7 +98,6 @@ export default function NewClientForm() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email"
-                    style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
                 />
                 {errors.email && <div className="error-message">{errors.email}</div>}
 
@@ -115,26 +107,27 @@ export default function NewClientForm() {
                     value={formData.phoneNumber}
                     onChange={handleChange}
                     placeholder="Phone Number"
-                    style={{ width: '100%', padding: '8px', marginBottom: '20px' }}
                 />
                 {errors.phoneNumber && <div className="error-message">{errors.phoneNumber}</div>}
-
-                <div className="form-buttons">
-                    <Button 
-                        type="submit"
-                        variant={BUTTON_VARIANTS.ACTION}
-                    >
-                        Create Client
-                    </Button>
-                    <Button 
-                        type="button"
-                        variant={BUTTON_VARIANTS.SECONDARY}
-                        onClick={() => navigate(ROUTES.CLIENTS)}
-                    >
-                        Cancel
-                    </Button>
-                </div>
-            </form>
+            </div>
+            <div className="form-buttons">
+                <Button 
+                    onClick={handleSubmit}
+                    variant={BUTTON_VARIANTS.ACTION}
+                    fullWidth
+                >
+                    Create Client
+                </Button>
+                <Button 
+                    onClick={onClose}
+                    variant={BUTTON_VARIANTS.SECONDARY}
+                    fullWidth
+                >
+                    Cancel
+                </Button>
+            </div>
         </div>
     );
-}
+};
+
+export default AddClientModal; 

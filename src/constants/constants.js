@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
 };
 
 export const BUTTON_VARIANTS = {
-    ACTION: 'primary',
+    ACTION: 'action',
     SECONDARY: 'secondary',
     SUCCESS: 'success'
 };
@@ -22,9 +22,7 @@ export const ROUTES = {
     HOME: '/',
     LOGIN: '/login',
     CLIENTS: '/clients',
-    NEW_CLIENT: '/clients/new',
     WORKOUTS: (clientId) => `/clients/${clientId}/workouts`,
-    NEW_WORKOUT: (clientId) => `/clients/${clientId}/workouts/new`,
     WORKOUT_DETAILS: (clientId, workoutId) => `/clients/${clientId}/workouts/${workoutId}`,
     NEW_EXERCISE: '/exercises/new'
 }; 
